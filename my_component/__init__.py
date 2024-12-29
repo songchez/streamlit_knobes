@@ -2,9 +2,10 @@ import os
 import streamlit as st
 import streamlit.components.v1 as components
 
-my_component = components.declare_component("my_component", url="http://localhost:3001")
-
-my_component(name="fuckyou")
+knob_component = components.declare_component("knob_component", url="http://localhost:3001")
 
 
-st.header("진촤 어이없네?")
+st.header("Streamlit Knobes")
+
+
+knob_component(size="medium")
