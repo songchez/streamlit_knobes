@@ -10,7 +10,7 @@ pip install streamlit-custom-component
 
 ## Usage instructions
 
-```python
+````python
 import streamlit as st
 
 from my_component import my_component
@@ -19,3 +19,4 @@ value = my_component()
 
 st.write(value)
 ```# streamlit_nobes
+````
