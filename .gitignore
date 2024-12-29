@@ -1,0 +1,28 @@
+# Python 관련 파일
+__pycache__/
+/venv
+*.DS_Store
+
+# Node.js 관련 파일
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 빌드 출력
+frontend/build/
+frontend/dist/
+
+# 환경설정 파일
+*.env.local
+*.env.development
+*.env.test
+*.env.production
+
+# 운영 체제 관련 파일
+.DS_Store
+Thumbs.db
+
+# 기타
+*.log
+*.tmp
