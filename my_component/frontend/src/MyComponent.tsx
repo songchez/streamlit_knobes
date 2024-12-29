@@ -10,73 +10,98 @@ import React, {
   useState,
   ReactElement,
 } from "react"
+import "./Knob.css" // Custom CSS for styling the knob
 
 /**
- * This is a React-based component template. The passed props are coming from the
- * Streamlit library. Your custom args can be accessed via the `args` props.
+ * Custom Knob Component: Allows the user to adjust a numerical value using a knob UI.
+ *
+ * Features:
+ * - Dragging mouse up/down or using keyboard arrows to change values.
+ * - Basic UI with customizable colors.
+ * - Option to load an image to display as the knob.
  */
-function MyComponent({ args, theme }: ComponentProps): ReactElement {
-  const { name } = args
+function KnobComponent({ args, theme }: ComponentProps): ReactElement {
+  const { min = 0, max = 100, step = 1, initial = 50, knobImage } = args
 
+  const [value, setValue] = useState(initial)
   const [isFocused, setIsFocused] = useState(false)
-  const [numClicks, setNumClicks] = useState(0)
+
+  const angle = useMemo(() => {
+    // Map the value to an angle for UI rotation
+    return ((value - min) / (max - min)) * 270 - 135
+  }, [value, min, max])
 
   const style: React.CSSProperties = useMemo(() => {
     if (!theme) return {}
+    return {
+      border: `2px solid ${isFocused ? theme.primaryColor : "gray"}`,
+      borderRadius: "50%",
+      width: "100px",
+      height: "100px",
+      backgroundImage: knobImage ? `url(${knobImage})` : undefined,
+      backgroundSize: "cover",
+      backgroundColor: knobImage ? "transparent" : theme.backgroundColor,
+    }
+  }, [theme, isFocused, knobImage])
 
-    // Use the theme object to style our button border. Alternatively, the
-    // theme style is defined in CSS vars.
-    const borderStyling = `1px solid ${isFocused ? theme.primaryColor : "gray"}`
-    return { border: borderStyling, outline: borderStyling }
-  }, [theme, isFocused])
+  const handleChange = useCallback(
+    (delta: number) => {
+      setValue((prevValue: any) => {
+        const newValue = Math.min(max, Math.max(min, prevValue + delta))
+        Streamlit.setComponentValue(newValue)
+        return newValue
+      })
+    },
+    [min, max]
+  )
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key === "ArrowUp") {
+        handleChange(step)
+      } else if (event.key === "ArrowDown") {
+        handleChange(-step)
+      }
+    },
+    [handleChange, step]
+  )
+
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (event.buttons === 1) {
+        handleChange(-Math.sign(event.movementY) * step)
+      }
+    },
+    [handleChange, step]
+  )
 
   useEffect(() => {
-    Streamlit.setComponentValue(numClicks)
-  }, [numClicks])
+    if (isFocused) {
+      window.addEventListener("mousemove", handleMouseMove)
+    } else {
+      window.removeEventListener("mousemove", handleMouseMove)
+    }
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove)
+    }
+  }, [isFocused, handleMouseMove])
 
-  // setFrameHeight should be called on first render and evertime the size might change (e.g. due to a DOM update).
-  // Adding the style and theme here since they might effect the visual size of the component.
   useEffect(() => {
     Streamlit.setFrameHeight()
-  }, [style, theme])
+  }, [value, style])
 
-  /** Click handler for our "Click Me!" button. */
-  const onClicked = useCallback((): void => {
-    setNumClicks((prevNumClicks) => prevNumClicks + 1)
-  }, [])
-
-  /** Focus handler for our "Click Me!" button. */
-  const onFocus = useCallback((): void => {
-    setIsFocused(true)
-  }, [])
-
-  /** Blur handler for our "Click Me!" button. */
-  const onBlur = useCallback((): void => {
-    setIsFocused(false)
-  }, [])
-
-  // Show a button and some text.
-  // When the button is clicked, we'll increment our "numClicks" state
-  // variable, and send its new value back to Streamlit, where it'll
-  // be available to the Python program.
   return (
-    <span>
-      Hello, {name}! &nbsp;
-      <button
-        style={style}
-        onClick={onClicked}
-        onFocus={onFocus}
-        onBlur={onBlur}
-      >
-        Click Me!
-      </button>
-    </span>
+    <div
+      tabIndex={0} // Makes the element focusable
+      style={style}
+      onKeyDown={handleKeyDown}
+      onFocus={() => setIsFocused(true)}
+      onBlur={() => setIsFocused(false)}
+    >
+      <div className="knob" style={{ transform: `rotate(${angle}deg)` }}></div>
+      <div className="knob-value">{value}</div>
+    </div>
   )
 }
 
-// "withStreamlitConnection" is a wrapper function. It bootstraps the
-// connection between your component and the Streamlit app, and handles
-// passing arguments from Python -> Component.
-//
-// You don't need to edit withStreamlitConnection (but you're welcome to!).
-export default withStreamlitConnection(MyComponent)
+export default withStreamlitConnection(KnobComponent)
