@@ -1,6 +1,6 @@
 # Python 관련 파일
 __pycache__/
-/venv
+venv/
 *.DS_Store
 
 # Node.js 관련 파일
