@@ -25,4 +25,4 @@ st.write(knob1_value["value"])
 
 ## 이미지
 
-[이미지](/image.png)
+[](/image.png)
