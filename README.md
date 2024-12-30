@@ -19,7 +19,8 @@ from knobs import streamlit-knobs
 
 knob1_value = knobs(knob_type="1",size="medium",title="KNOB 1",maxValue=3000,minValue=0)
 
-st.write(knob1_value)
+st.write(knob1_value["angle"])
+st.write(knob1_value["value"])
 ```
 
 ## 이미지
