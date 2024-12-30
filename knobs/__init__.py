@@ -1,7 +1,14 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import os
 
-knobs = components.declare_component("knobs", url="http://localhost:3001")
+# 개발용. 개발할땐 풀고 npm start + streamlit run
+# knobs = components.declare_component("knobs", url="http://localhost:3001")
+
+# deploy
+parent_dir = os.path.dirname(os.path.abspath(__file__))
+build_dir = os.path.join(parent_dir, "frontend/build")
+knobs = components.declare_component("knobs", path=build_dir)
 
 
 st.header("Streamlit Knobes")
