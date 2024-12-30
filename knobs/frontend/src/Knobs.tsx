@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState, useCallback } from "react"
 import {
   Streamlit,
   withStreamlitConnection,
@@ -119,28 +119,31 @@ function Knob({
   /**
    * 5) 마우스 드래그: 각도 업데이트 (상대 Δ 사용)
    */
-  const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || lastMouseY.current === null) return
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (!isDragging || lastMouseY.current === null) return
 
-    // Δy 계산
-    const deltaY = e.clientY - lastMouseY.current
-    lastMouseY.current = e.clientY
+      // Δy 계산
+      const deltaY = event.clientY - lastMouseY.current
+      lastMouseY.current = event.clientY
 
-    // 드래그 감도 (원하는 대로 조절)
-    const DRAG_FACTOR = -1.0
-    // 위로 드래그(ΔY<0) 시 각도 증가, 아래로 드래그(ΔY>0) 시 각도 감소
+      // 드래그 감도 (원하는 대로 조절)
+      const DRAG_FACTOR = -1.0
+      // 위로 드래그(ΔY<0) 시 각도 증가, 아래로 드래그(ΔY>0) 시 각도 감소
 
-    let newAngle = angle + deltaY * DRAG_FACTOR
-    // 물리적 각도 제한에 걸리면 더 이상 업데이트하지 않음
-    newAngle = clamp(newAngle, MIN_ANGLE, MAX_ANGLE)
+      let newAngle = angle + deltaY * DRAG_FACTOR
+      // 물리적 각도 제한에 걸리면 더 이상 업데이트하지 않음
+      newAngle = clamp(newAngle, MIN_ANGLE, MAX_ANGLE)
 
-    // 새 값 계산
-    const newValue = angleToValue(newAngle, minValue, maxValue, step)
+      // 새 값 계산
+      const newValue = angleToValue(newAngle, minValue, maxValue, step)
 
-    setAngle(newAngle)
-    setKnobValue(newValue)
-    Streamlit.setComponentValue({ angle: newAngle, value: newValue })
-  }
+      setAngle(newAngle)
+      setKnobValue(newValue)
+      Streamlit.setComponentValue({ angle: newAngle, value: newValue })
+    },
+    [isDragging, angle, minValue, maxValue, step]
+  )
 
   const handleMouseDown = (e: React.MouseEvent) => {
     e.preventDefault()
@@ -148,13 +151,30 @@ function Knob({
     lastMouseY.current = e.clientY
   }
 
-  const handleMouseUp = () => {
+  const handleMouseUp = useCallback(() => {
     setIsDragging(false)
     lastMouseY.current = null
-  }
+  }, [])
 
   /**
-   * 6) 전역 mousemove/mouseup 등록/해제
+   * 6) Streamlit 높이 자동조절 및 초기값 설정
+   */
+  useEffect(() => {
+    // 초기값 계산 및 설정
+    const initialAngle = valueToAngle(initialValue, minValue, maxValue)
+
+    // 명시적으로 초기값 전달
+    Streamlit.setComponentValue({
+      angle: initialAngle,
+      value: initialValue,
+    })
+
+    // 프레임 높이 설정
+    Streamlit.setFrameHeight()
+  }, [initialValue, minValue, maxValue])
+
+  /**
+   * 7) 전역 mousemove/mouseup 등록/해제
    */
   useEffect(() => {
     document.addEventListener("mousemove", handleMouseMove)
@@ -163,15 +183,7 @@ function Knob({
       document.removeEventListener("mousemove", handleMouseMove)
       document.removeEventListener("mouseup", handleMouseUp)
     }
-  }, [isDragging, angle])
-
-  /**
-   * 7) Streamlit 높이 자동조절
-   */
-  useEffect(() => {
-    Streamlit.setFrameHeight()
-    Streamlit.setComponentValue({ angle: 0, value: (maxValue - minValue) / 2 })
-  }, [])
+  }, [handleMouseMove, handleMouseUp])
 
   /**
    * 8) JSX 렌더링
@@ -205,9 +217,10 @@ function Knob({
           }}
         />
         {/* 안쪽(Inner) 이미지 */}
+
         <img
           className="knob-inner"
-          src={`/knob${knob_type}_in.png`}
+          src={`images/knob${knob_type}_in.png`}
           alt="knob_in"
           style={{
             position: "absolute",
@@ -222,7 +235,7 @@ function Knob({
         {/* 바깥쪽(Outer) 이미지 */}
         <img
           className="knob-outer"
-          src={`/knob${knob_type}.png`}
+          src={`images/knob${knob_type}.png`}
           alt="knob"
           style={{
             width: containerSize,
