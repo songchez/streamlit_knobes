@@ -23,6 +23,4 @@ st.write(knob1_value["angle"])
 st.write(knob1_value["value"])
 ```
 
-## 이미지
-
-[](https://raw.githubusercontent.com/songchez/streamlit_knobes/refs/heads/main/image.png)
+![image](https://raw.githubusercontent.com/songchez/streamlit_knobes/refs/heads/main/image.png)
