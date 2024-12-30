@@ -25,4 +25,4 @@ st.write(knob1_value["value"])
 
 ## 이미지
 
-[](/image.png)
+[](https://raw.githubusercontent.com/songchez/streamlit_knobes/refs/heads/main/image.png)
