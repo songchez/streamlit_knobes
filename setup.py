@@ -6,11 +6,11 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
-    name="streamlit-custom-component",
+    name="streamlit-knobs",
     version="0.0.1",
-    author="John Smith",
-    author_email="john@example.com",
-    description="Streamlit component that allows you to do X",
+    author="Sanchez, Na",
+    author_email="tama4840@gmail.com",
+    description="simple knob component",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="",
