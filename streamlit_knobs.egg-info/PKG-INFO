@@ -1,0 +1,47 @@
+Metadata-Version: 2.1
+Name: streamlit-knobs
+Version: 0.0.1
+Summary: simple knob component
+Home-page: 
+Author: Sanchez, Na
+Author-email: tama4840@gmail.com
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: streamlit>=0.63
+Provides-Extra: devel
+Requires-Dist: wheel; extra == "devel"
+Requires-Dist: pytest==7.4.0; extra == "devel"
+Requires-Dist: playwright==1.48.0; extra == "devel"
+Requires-Dist: requests==2.31.0; extra == "devel"
+Requires-Dist: pytest-playwright-snapshot==1.0; extra == "devel"
+Requires-Dist: pytest-rerunfailures==12.0; extra == "devel"
+
+# streamlit-Knobs
+
+간단하게 쓸 수 있는 노브 컴포넌트입니다.
+AI로 이미지를 생성하여 아날로그 버튼과 비슷하게 구현하였습니다.
+
+## Installation instructions
+
+```sh
+pip install streamlit-knobs
+```
+
+## Usage instructions
+
+```python
+# streamlit_nobes
+import streamlit as st
+
+from knobs import streamlit-knobs
+
+knob1_value = knobs(knob_type="1",size="medium",title="KNOB 1",maxValue=3000,minValue=0)
+
+st.write(knob1_value["angle"])
+st.write(knob1_value["value"])
+```
+
+## 이미지
+
+[이미지](/image.png)

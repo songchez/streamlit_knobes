@@ -13,9 +13,9 @@ interface KnobProps extends ComponentProps {
     knob_type?: "1" | "2" | "3"
     title?: string
     /** 노브가 표현할 값의 최소 범위 */
-    minValue?: number
+    minValue: number
     /** 노브가 표현할 값의 최대 범위 */
-    maxValue?: number
+    maxValue: number
     /** 노브 값에 적용할 step (1, 0.1 등) */
     step?: number
     /** 노브의 초기값 */
@@ -140,7 +140,7 @@ function Knob({
 
       setAngle(newAngle)
       setKnobValue(newValue)
-      Streamlit.setComponentValue({ angle: newAngle, value: newValue })
+      Streamlit.setComponentValue(newValue)
     },
     [isDragging, angle, minValue, maxValue, step]
   )
@@ -161,13 +161,9 @@ function Knob({
    */
   useEffect(() => {
     // 초기값 계산 및 설정
-    const initialAngle = valueToAngle(initialValue, minValue, maxValue)
-
-    // 명시적으로 초기값 전달
-    Streamlit.setComponentValue({
-      angle: initialAngle,
-      value: initialValue,
-    })
+    setTimeout(() => {
+      Streamlit.setComponentValue(initialValue)
+    }, 100) // 100ms 지연
 
     // 프레임 높이 설정
     Streamlit.setFrameHeight()
