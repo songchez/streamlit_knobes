@@ -21,3 +21,7 @@ knob1_value = knobs(knob_type="1",size="medium",title="KNOB 1",maxValue=3000,min
 
 st.write(knob1_value)
 ```
+
+## 이미지
+
+[이미지](/image.png)
