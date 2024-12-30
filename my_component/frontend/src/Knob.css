@@ -1,9 +1,9 @@
-body {
-  margin: 0;
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+#box_container {
+  /* 드래그 방지 */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #center {
@@ -11,11 +11,4 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.knob {
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  transform-origin: center;
 }
