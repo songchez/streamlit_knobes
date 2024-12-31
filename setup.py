@@ -7,7 +7,7 @@ long_description = (this_directory / "README.md").read_text()
 
 setuptools.setup(
     name="streamlit-knobs",
-    version="0.0.2",
+    version="0.0.4",
     author="Sanchez, Na",
     author_email="tama4840@gmail.com",
     description="simple knob component",
