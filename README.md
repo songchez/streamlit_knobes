@@ -19,9 +19,7 @@ pip install streamlit-knobs
 
 ```python
 # streamlit_nobes
-import streamlit as st
-
-from streamlit-knobs import knob
+from knobs import knob
 
 knob_value = knob(knob_type="1",max_value=1000, min_value=0)
 
